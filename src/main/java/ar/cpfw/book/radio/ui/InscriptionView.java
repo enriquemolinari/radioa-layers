@@ -2,7 +2,6 @@ package ar.cpfw.book.radio.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -43,12 +42,12 @@ public class InscriptionView {
 	private JButton btnOk;
 	private JLabel lblCompetition;
 
-	public InscriptionView(RadioProgram radioProgram) throws SQLException {
+	public InscriptionView(RadioProgram radioProgram) {
 		this.radioProgram = radioProgram;
 		makeUi();
 	}
 
-	private void makeUi() throws SQLException {
+	private void makeUi() {
 		var frame = new JFrame("Inscription to Competition");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(100, 100, 451, 229);
@@ -61,7 +60,7 @@ public class InscriptionView {
 		frame.setVisible(true);
 	}
 
-	private void formElements() throws SQLException {
+	private void formElements() {
 		lblName = new JLabel("Name:");
 
 		txtName = new JTextField();
@@ -131,7 +130,7 @@ public class InscriptionView {
 		allCompetitions();
 	}
 
-	private void allCompetitions() throws SQLException {
+	private void allCompetitions() {
 		var competitions = new ArrayList<Item>();
 		competitions.add(new Item(0, "Select One"));
 
@@ -144,7 +143,7 @@ public class InscriptionView {
 				competitions.toArray(new Item[competitions.size()])));
 	}
 
-	private void saveInscription() throws SQLException {
+	private void saveInscription() {
 		radioProgram.addInscription(
 				((Item) this.comboBox.getSelectedItem()).id(),
 				new Competitor() {
