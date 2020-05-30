@@ -103,12 +103,13 @@ public class InscriptionView {
 									.equals(e.getCause().getClass()))
 								JOptionPane.showMessageDialog(contentPane,
 										e.getMessage());
-							else 
+							else
 								JOptionPane.showMessageDialog(contentPane,
 										"Something went wrong...");
 							throw new RuntimeException(e);
 						} catch (InterruptedException e) {
-							JOptionPane.showMessageDialog(contentPane, "Something went wrong...");
+							JOptionPane.showMessageDialog(contentPane,
+									"Something went wrong...");
 							throw new RuntimeException(e);
 						}
 					}

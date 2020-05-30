@@ -1,4 +1,4 @@
-package ar.cpfw.book.radio.main;
+package ar.cpfw.book.main;
 
 import java.sql.SQLException;
 
