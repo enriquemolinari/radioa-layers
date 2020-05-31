@@ -14,181 +14,193 @@ import java.util.Optional;
 
 public class JdbcCompetitorRepository implements CompetitionRepository {
 
-	@Override
-	public Optional<Competition> competitionBy(int id) {
+ private String user;
+ private String pwd;
+ private String dbName;
+ private String dbServer;
+ private String dbPort;
 
-		Connection c = connection();
-		try {
+ public JdbcCompetitorRepository(String user, String pwd, String dbName,
+   String dbServer, String dbPort) {
+  this.user = user;
+  this.pwd = pwd;
+  this.dbName = dbName;
+  this.dbServer = dbServer;
+  this.dbPort = dbPort;
+ }
 
-			var checkCompetitionSt = c.prepareStatement(
-					"select id, description, rules"
-					+ ",start_date, inscription_start_date"
-					+ ",inscription_end_date from competition "
-					+ "where id = ?");
+ @Override
+ public Optional<Competition> competitionBy(int id) {
 
-			checkCompetitionSt.setInt(1, id);
-			
-			ResultSet resultSet = checkCompetitionSt.executeQuery();
-			
-			if (resultSet.next()) {
-				return Optional.of(toCompetition(resultSet));
-			}
-		
-			return Optional.empty();
-		} catch (SQLException e) {
-			throw new PersistenceException(e);
-		} finally {
-			try {
-				c.close();
-			} catch (SQLException e) {
-				throw new PersistenceException(e);
-			}
-		}
-	}
-	
-	@Override
-	public void addInscription(String name, String lastName, String id,
-			String phone, String email, int idCompetition)
-			throws PersistenceException {
+  Connection c = connection();
+  try {
 
-		Connection c = connection();
-		try {
-			c.setAutoCommit(false);
-			
-			var st = c.prepareStatement(
-					"insert into competitor(first_name, last_name, person_id, "
-							+ "email, phone) " + "values(?,?,?,?,?)",
-					Statement.RETURN_GENERATED_KEYS);
+   var checkCompetitionSt = c
+     .prepareStatement("select id, description, rules"
+       + ",start_date, inscription_start_date"
+       + ",inscription_end_date from competition " + "where id = ?");
 
-			st.setString(1, name);
-			st.setString(2, lastName);
-			st.setString(3, id);
-			st.setString(4, email);
-			st.setString(5, phone);
-			st.executeUpdate();
+   checkCompetitionSt.setInt(1, id);
 
-			ResultSet generatedKeys = st.getGeneratedKeys();
-			generatedKeys.next();
+   ResultSet resultSet = checkCompetitionSt.executeQuery();
 
-			PreparedStatement st2 = c.prepareStatement(
-					"insert into inscription(id_competition, id_competitor, inscription_date) "
-							+ "values(?,?,?)");
+   if (resultSet.next()) {
+    return Optional.of(toCompetition(resultSet));
+   }
 
-			st2.setInt(1, idCompetition);
-			st2.setInt(2, generatedKeys.getInt(1));
-			st2.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
-			st2.executeUpdate();
+   return Optional.empty();
+  } catch (SQLException e) {
+   throw new PersistenceException(e);
+  } finally {
+   try {
+    c.close();
+   } catch (SQLException e) {
+    throw new PersistenceException(e);
+   }
+  }
+ }
 
-			c.commit();
-		} catch (Exception e) {
-			try {
-				c.rollback();
-				throw new PersistenceException(e);
-			} catch (SQLException s) {
-				throw new PersistenceException(s);
-			}
-		} finally {
-			try {
-				c.setAutoCommit(true);
-			} catch (SQLException s) {
-				throw new PersistenceException(s);
-			}
-		}
+ @Override
+ public void addInscription(String name, String lastName, String id,
+   String phone, String email, int idCompetition)
+   throws PersistenceException {
 
-	}
+  Connection c = connection();
+  try {
+   c.setAutoCommit(false);
 
-	@Override
-	public List<Competition> competitionsForInscription()
-			throws PersistenceException {
-		Connection c = connection();
-		try {
-			PreparedStatement st = c.prepareStatement(
-					"select id, description, rules, start_date, "
-							+ "inscription_start_date, inscription_end_date "
-							+ "from competition "
-							+ "where inscription_start_date <= ? "
-							+ "and inscription_end_date >= ?");
+   var st = c.prepareStatement(
+     "insert into competitor(first_name, last_name, person_id, "
+       + "email, phone) " + "values(?,?,?,?,?)",
+     Statement.RETURN_GENERATED_KEYS);
 
-			st.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
-			st.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+   st.setString(1, name);
+   st.setString(2, lastName);
+   st.setString(3, id);
+   st.setString(4, email);
+   st.setString(5, phone);
+   st.executeUpdate();
 
-			ResultSet resultSet = st.executeQuery();
+   ResultSet generatedKeys = st.getGeneratedKeys();
+   generatedKeys.next();
 
-			var competitions = new ArrayList<Competition>();
-			
-			while (resultSet.next()) {
-				competitions.add(toCompetition(resultSet));
-			}
-			
-			return competitions;
-		} catch (SQLException e) {
-			throw new PersistenceException(e);
-		} finally {
-			try {
-				c.close();
-			} catch (SQLException e) {
-				throw new PersistenceException(e);
-			}
-		}
-	}
+   PreparedStatement st2 = c.prepareStatement(
+     "insert into inscription(id_competition, id_competitor, inscription_date) "
+       + "values(?,?,?)");
 
-	private Competition toCompetition(ResultSet resultSet) {
-		try {
+   st2.setInt(1, idCompetition);
+   st2.setInt(2, generatedKeys.getInt(1));
+   st2.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+   st2.executeUpdate();
 
-			int id = resultSet.getInt("id");
-			var description = resultSet.getString("description");
-			var rules = resultSet.getString("rules");
-			var startDate = resultSet.getTimestamp("start_date");
-			var inscriptionStartDate = resultSet
-					.getTimestamp("inscription_start_date");
-			var inscriptionEndDate = resultSet
-					.getTimestamp("inscription_end_date");
-		
-			return new Competition() {
-				@Override
-				public LocalDateTime startDate() {
-					return startDate.toLocalDateTime();
-				}
+   c.commit();
+  } catch (Exception e) {
+   try {
+    c.rollback();
+    throw new PersistenceException(e);
+   } catch (SQLException s) {
+    throw new PersistenceException(s);
+   }
+  } finally {
+   try {
+    c.setAutoCommit(true);
+   } catch (SQLException s) {
+    throw new PersistenceException(s);
+   }
+  }
 
-				@Override
-				public String rules() {
-					return rules;
-				}
+ }
 
-				@Override
-				public LocalDateTime inscriptionStartDate() {
-					return inscriptionStartDate.toLocalDateTime();
-				}
+ @Override
+ public List<Competition> competitionsForInscription()
+   throws PersistenceException {
+  Connection c = connection();
+  try {
+   PreparedStatement st = c
+     .prepareStatement("select id, description, rules, start_date, "
+       + "inscription_start_date, inscription_end_date "
+       + "from competition " + "where inscription_start_date <= ? "
+       + "and inscription_end_date >= ?");
 
-				@Override
-				public LocalDateTime inscriptionEndDate() {
-					return inscriptionEndDate.toLocalDateTime();
-				}
+   st.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+   st.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
 
-				@Override
-				public int id() {
-					return id;
-				}
+   ResultSet resultSet = st.executeQuery();
 
-				@Override
-				public String description() {
-					return description;
-				}
-			};
-		} catch (SQLException e) {
-			throw new PersistenceException(e);
-		}
-	}
-	
-	private Connection connection() {
-		String url = "jdbc:derby://localhost:1527/radiocompetition";
-		String user = "app";
-		String password = "app";
-		try {
-			return DriverManager.getConnection(url, user, password);
-		} catch (SQLException e) {
-			throw new PersistenceException(e);
-		}
-	}
+   var competitions = new ArrayList<Competition>();
+
+   while (resultSet.next()) {
+    competitions.add(toCompetition(resultSet));
+   }
+
+   return competitions;
+  } catch (SQLException e) {
+   throw new PersistenceException(e);
+  } finally {
+   try {
+    c.close();
+   } catch (SQLException e) {
+    throw new PersistenceException(e);
+   }
+  }
+ }
+
+ private Competition toCompetition(ResultSet resultSet) {
+  try {
+
+   int id = resultSet.getInt("id");
+   var description = resultSet.getString("description");
+   var rules = resultSet.getString("rules");
+   var startDate = resultSet.getTimestamp("start_date");
+   var inscriptionStartDate = resultSet
+     .getTimestamp("inscription_start_date");
+   var inscriptionEndDate = resultSet.getTimestamp("inscription_end_date");
+
+   return new Competition() {
+    @Override
+    public LocalDateTime startDate() {
+     return startDate.toLocalDateTime();
+    }
+
+    @Override
+    public String rules() {
+     return rules;
+    }
+
+    @Override
+    public LocalDateTime inscriptionStartDate() {
+     return inscriptionStartDate.toLocalDateTime();
+    }
+
+    @Override
+    public LocalDateTime inscriptionEndDate() {
+     return inscriptionEndDate.toLocalDateTime();
+    }
+
+    @Override
+    public int id() {
+     return id;
+    }
+
+    @Override
+    public String description() {
+     return description;
+    }
+   };
+  } catch (SQLException e) {
+   throw new PersistenceException(e);
+  }
+ }
+
+ private Connection connection() {
+  String url = "jdbc:derby://" + dbServer + ":" + dbPort + "/" + dbName;
+  String user = this.user;
+  String password = this.pwd;
+  try {
+   return DriverManager.getConnection(url, user, password);
+  } catch (SQLException e) {
+   throw new PersistenceException(e);
+  }
+ }
 
 }

@@ -10,26 +10,26 @@ import ar.cpfw.book.radio.ui.InscriptionView;
 
 public class Main {
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					new Main().start();
-				} catch (Exception e) {
-					// log exception...
-					System.out.println(e);
-				}
-			}
-		});
-	}
+ public static void main(String[] args) {
+  SwingUtilities.invokeLater(new Runnable() {
+   @Override
+   public void run() {
+    try {
+     new Main().start();
+    } catch (Exception e) {
+     // log exception...
+     System.out.println(e);
+    }
+   }
+  });
+ }
 
-	private void start() throws SQLException {
-		new InscriptionView(
-				new DefaultRadioProgram(
-						new JdbcCompetitorRepository()
-						)
-				);
-	}
-
+ private void start() throws SQLException {
+  new InscriptionView(
+    new DefaultRadioProgram(
+      new JdbcCompetitorRepository(
+        "app", "app", "radiocompetition", "localhost", "1527")
+      )
+    );
+ }
 }
