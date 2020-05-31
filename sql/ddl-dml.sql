@@ -7,7 +7,6 @@ CREATE TABLE competitor (
    person_id VARCHAR(15),
    email varchar(50),
    phone varchar(35),
-   points integer,
    PRIMARY KEY (id)
 );
 

@@ -33,7 +33,10 @@ public class DefaultRadioProgram implements RadioProgram {
 
 	@Override
 	public void addInscription(int idCompetition, Competitor competitor) {
-//		TODO: validae idCompetition
+		repository.competitionBy(idCompetition)
+				.orElseThrow(() -> new RadioException(
+						"Selected competition does not exists..."));
+
 		Competitor c = new DefaultCompetitor(competitor.id(),
 				competitor.name(), competitor.lastName(),
 				competitor.email(), competitor.phone());
@@ -42,5 +45,4 @@ public class DefaultRadioProgram implements RadioProgram {
 				c.phone(), c.email(), idCompetition);
 
 	}
-
 }

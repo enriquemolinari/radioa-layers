@@ -25,7 +25,11 @@ public class Main {
 	}
 
 	private void start() throws SQLException {
-		new InscriptionView(new DefaultRadioProgram(new JdbcCompetitorRepository()));
+		new InscriptionView(
+				new DefaultRadioProgram(
+						new JdbcCompetitorRepository()
+						)
+				);
 	}
 
 }
