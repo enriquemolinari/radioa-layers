@@ -4,8 +4,7 @@ import org.junit.Test;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
-//import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
-import com.tngtech.archunit.library.Architectures;
+import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 public class TestLayers {
 
@@ -15,8 +14,7 @@ public class TestLayers {
 		JavaClasses importedClasses = new ClassFileImporter()
 				.importPackages("ar.cpfw.book.radio");
 
-		Architectures
-			.layeredArchitecture()
+		layeredArchitecture()
 			.layer("UI").definedBy("..ui..")
 			.layer("BusinessLogic").definedBy("..model..")
 			.layer("Persistence").definedBy("..persistence..")
