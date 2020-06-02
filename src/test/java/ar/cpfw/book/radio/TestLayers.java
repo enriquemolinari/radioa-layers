@@ -10,7 +10,6 @@ public class TestLayers {
 
 	@Test
 	public void testLayers() {
-
 		layeredArchitecture()
 			.layer("UI").definedBy("..ui..")
 			.layer("BusinessLogic").definedBy("..model..")
