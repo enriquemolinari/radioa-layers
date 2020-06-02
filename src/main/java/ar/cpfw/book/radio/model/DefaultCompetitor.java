@@ -10,9 +10,9 @@ class DefaultCompetitor implements Competitor {
 
 	public DefaultCompetitor(String id, String name, String lastName,
 			String email, String phone) {
-		this.id = new NotNullOrNorEmpty<String>(id, "Id").value();
-		this.name = new NotNullOrNorEmpty<String>(name, "Name").value();
-		this.lastName = new NotNullOrNorEmpty<String>(lastName, "Last Name").value();;
+		this.id = new NotNullNorEmpty<String>(id, "Id").value();
+		this.name = new NotNullNorEmpty<String>(name, "Name").value();
+		this.lastName = new NotNullNorEmpty<String>(lastName, "Last Name").value();
 		this.email = new Email(email);
 		this.phone = new Phone(phone);
 	}

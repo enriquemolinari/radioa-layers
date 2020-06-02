@@ -1,7 +1,5 @@
 package ar.cpfw.book.main;
 
-import java.sql.SQLException;
-
 import javax.swing.SwingUtilities;
 
 import ar.cpfw.book.radio.model.DefaultRadioProgram;
@@ -17,14 +15,15 @@ public class Main {
     try {
      new Main().start();
     } catch (Exception e) {
-     // log exception...
+     // log the exception...
+     //Show "Ups something went wrong" to the user...
      System.out.println(e);
     }
    }
   });
  }
 
- private void start() throws SQLException {
+ private void start() {
   new InscriptionView(
     new DefaultRadioProgram(
       new JdbcCompetitorRepository(

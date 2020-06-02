@@ -1,10 +1,10 @@
 package ar.cpfw.book.radio.model;
 
-class NotNullOrNorEmpty<T> {
+class NotNullNorEmpty<T> {
 
 	private T value;
 	
-	public NotNullOrNorEmpty(T value, String description) {
+	public NotNullNorEmpty(T value, String description) {
 		if (value == null || "".equals(value)) {
 			throw new RadioException(description + " must be valid...");
 		}
