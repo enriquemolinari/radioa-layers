@@ -3,7 +3,7 @@ package ar.cpfw.book.main;
 import javax.swing.SwingUtilities;
 
 import ar.cpfw.book.radio.model.DefaultRadioProgram;
-import ar.cpfw.book.radio.persistence.JdbcCompetitorRepository;
+import ar.cpfw.book.radio.persistence.JdbcCompetitionRepository;
 import ar.cpfw.book.radio.ui.InscriptionView;
 
 public class Main {
@@ -26,7 +26,7 @@ public class Main {
  private void start() {
   new InscriptionView(
     new DefaultRadioProgram(
-      new JdbcCompetitorRepository(
+      new JdbcCompetitionRepository(
         "app", "app", "radiocompetition", "localhost", "1527")
       )
     );

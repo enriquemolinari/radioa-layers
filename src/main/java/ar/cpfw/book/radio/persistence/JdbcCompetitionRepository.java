@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JdbcCompetitorRepository implements CompetitionRepository {
+public class JdbcCompetitionRepository implements CompetitionRepository {
 
  private String user;
  private String pwd;
@@ -20,7 +20,7 @@ public class JdbcCompetitorRepository implements CompetitionRepository {
  private String dbServer;
  private String dbPort;
 
- public JdbcCompetitorRepository(String user, String pwd, String dbName,
+ public JdbcCompetitionRepository(String user, String pwd, String dbName,
    String dbServer, String dbPort) {
   this.user = user;
   this.pwd = pwd;
