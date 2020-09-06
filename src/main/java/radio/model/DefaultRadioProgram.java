@@ -1,10 +1,10 @@
-package ar.cpfw.book.radio.model;
+package radio.model;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ar.cpfw.book.radio.persistence.Competition;
-import ar.cpfw.book.radio.persistence.CompetitionRepository;
+import radio.persistence.Competition;
+import radio.persistence.CompetitionRepository;
 
 public class DefaultRadioProgram implements RadioProgram {
 

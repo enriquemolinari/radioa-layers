@@ -1,4 +1,4 @@
-package ar.cpfw.book.radio.persistence;
+package radio.persistence;
 
 public class PersistenceException extends RuntimeException {
 

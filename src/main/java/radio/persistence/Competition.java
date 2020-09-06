@@ -1,4 +1,4 @@
-package ar.cpfw.book.radio.persistence;
+package radio.persistence;
 
 import java.time.LocalDateTime;
 
