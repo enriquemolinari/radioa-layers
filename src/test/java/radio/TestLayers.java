@@ -18,6 +18,6 @@ public class TestLayers {
  			.whereLayer("BusinessLogic").mayOnlyBeAccessedByLayers("UI")
 			.whereLayer("Persistence").mayOnlyBeAccessedByLayers("BusinessLogic")
 			.check(new ClassFileImporter()
-	    .importPackages("ar.cpfw.book.radio"));
+	    .importPackages("radio"));
 	}
 }
