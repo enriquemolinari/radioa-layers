@@ -1,4 +1,4 @@
-package radio.persistence;
+package radio.persistence.api;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +13,8 @@ public interface CompetitionRepository {
 
 	List<Competition> competitionsForInscription()
 			throws PersistenceException;
+
+//	static CompetitionRepository fabrica(String a, String b, String c, String d, String e) {
+//	 return new JdbcCompetitionRepository("", "", "", "", "");
+//	}
 }

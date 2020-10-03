@@ -3,8 +3,12 @@ package radio.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import radio.persistence.Competition;
-import radio.persistence.CompetitionRepository;
+import radio.model.api.Competitor;
+import radio.model.api.RadioCompetition;
+import radio.model.api.RadioException;
+import radio.model.api.RadioProgram;
+import radio.persistence.api.Competition;
+import radio.persistence.api.CompetitionRepository;
 
 public class DefaultRadioProgram implements RadioProgram {
 
@@ -13,7 +17,7 @@ public class DefaultRadioProgram implements RadioProgram {
 	public DefaultRadioProgram(CompetitionRepository repository) {
 		this.repository = repository;
 	}
-
+	
 	@Override
 	public Iterable<RadioCompetition> availableCompetitions() {
 		List<Competition> cs = repository.competitionsForInscription();

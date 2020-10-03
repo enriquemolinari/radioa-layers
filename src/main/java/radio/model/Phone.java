@@ -1,5 +1,7 @@
 package radio.model;
 
+import radio.model.api.RadioException;
+
 class Phone {
 
 	public String number;

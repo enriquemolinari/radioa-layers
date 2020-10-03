@@ -1,4 +1,4 @@
-package radio.persistence;
+package radio.persistence.api;
 
 public class PersistenceException extends RuntimeException {
 

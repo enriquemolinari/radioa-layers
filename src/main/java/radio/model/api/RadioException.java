@@ -1,4 +1,4 @@
-package radio.model;
+package radio.model.api;
 
 public class RadioException extends RuntimeException {
 

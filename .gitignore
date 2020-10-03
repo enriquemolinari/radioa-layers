@@ -2,3 +2,6 @@
 /.project
 /.classpath
 /target/
+/physical-build
+/all-lib-jars
+/lib-persistence-jars

@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import radio.persistence.api.Competition;
+import radio.persistence.api.CompetitionRepository;
+import radio.persistence.api.PersistenceException;
+
 public class JdbcCompetitionRepository implements CompetitionRepository {
 
  private String user;
