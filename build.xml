@@ -1,0 +1,158 @@
+<!-- This is the ant build script to prove that logical design can be transformed 
+	to physical -->
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<target name="persistence-depedencies-to-lib-persistence-jars">
+		<path id="maven-ant-tasks.classpath"
+			path="lib/maven-ant-tasks-2.1.3.jar" />
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+			uri="antlib:org.apache.maven.artifact.ant"
+			classpathref="maven-ant-tasks.classpath" />
+
+		<artifact:pom file="pom.xml" id="maven.project" />
+	
+		<artifact:dependencies fileSetId="maven-ant-tasks.dependency.fileset">
+			<dependency groupId="org.apache.derby" artifactId="derbyclient" version="10.15.1.3"/>
+			<dependency groupId="org.apache.derby" artifactId="derbyshared" version="10.15.1.3"/>
+			<dependency groupId="org.apache.derby" artifactId="derbytools" version="10.15.1.3"/>
+			<dependency groupId="org.apache.derby" artifactId="derby" version="10.15.1.3"/>
+		</artifact:dependencies>
+
+		<delete dir="lib-persistence-jars" />
+		<mkdir dir="lib-persistence-jars" />
+		<copy todir="lib-persistence-jars">
+			<fileset refid="maven-ant-tasks.dependency.fileset"/>
+			<mapper type="flatten" />
+		</copy>
+	</target>
+
+	<target name="all-depedencies-to-lib-jars">
+		<path id="maven-ant-tasks.classpath"
+			path="lib/maven-ant-tasks-2.1.3.jar" />
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+			uri="antlib:org.apache.maven.artifact.ant"
+			classpathref="maven-ant-tasks.classpath" />
+
+		<artifact:pom file="pom.xml" id="maven.project" />
+	
+		<artifact:dependencies fileSetId="maven-ant-tasks.dependency.fileset">
+			<pom refid="maven.project" />
+		</artifact:dependencies>
+
+		<delete dir="all-lib-jars" />
+		<mkdir dir="all-lib-jars" />
+		<copy todir="all-lib-jars">
+			<fileset refid="maven-ant-tasks.dependency.fileset"/>
+			<mapper type="flatten" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete includeemptydirs="true">
+  			<fileset dir="physical-build" includes="**/*"/>
+		</delete>	
+	</target>
+
+	<!-- compiling java packages independently -->
+
+	<target name="compile-persistence-api">
+		<mkdir dir="physical-build/classes-persistence-api" />
+		<javac sourcepath="" srcdir="src/main/java"
+			destdir="physical-build/classes-persistence-api"
+			excludes="radio/persistence/*.java"
+			includes="radio/persistence/api/*.java">
+		</javac>
+	</target>
+
+	<target name="jar-persistence-api" depends="compile-persistence-api">
+		<mkdir dir="physical-build/jar-persistence-api"/>
+
+		<jar destfile="physical-build/jar-persistence-api/persistence-api.jar" 
+					basedir="physical-build/classes-persistence-api">
+		</jar>
+	</target>
+
+	<target name="compile-persistence-impl" depends="jar-persistence-api">
+		<path id="lib.path.ref">
+	  		<fileset dir="lib-jars" includes="*.jar"/>
+		</path>
+	
+		<mkdir dir="physical-build/classes-persistence-impl" />
+		
+		<!-- classpathref="lib.path.ref" -->
+		<javac sourcepath="" 
+			classpath="physical-build/jar-persistence-api/persistence-api.jar" 
+			srcdir="src/main/java"
+			destdir="physical-build/classes-persistence-impl"
+			includes="radio/persistence/*.java"
+			excludes="radio/persistence/api/*.java">
+		</javac>
+	</target>
+
+	<target name="jar-persistence-impl" depends="compile-persistence-impl">
+		<mkdir dir="physical-build/jar-persistence-impl"/>
+
+		<jar destfile="physical-build/jar-persistence-impl/persistence-impl.jar" 
+					basedir="physical-build/classes-persistence-impl">
+		</jar>
+	</target>
+
+	<target name="compile-model-api">
+		<mkdir dir="physical-build/classes-model-api" />
+
+		<javac sourcepath="" srcdir="src/main/java"
+			destdir="physical-build/classes-model-api"
+			excludes="radio/model/*.java" includes="radio/model/api/*.java">
+		</javac>
+	</target>
+
+	<target name="jar-model-api" depends="compile-model-api">
+		<mkdir dir="physical-build/jar-model-api"/>
+
+		<jar destfile="physical-build/jar-model-api/model-api.jar" 
+					basedir="physical-build/classes-model-api">
+		</jar>
+	</target>
+
+	<target name="compile-model-impl" depends="jar-model-api, jar-persistence-api">
+		<mkdir dir="physical-build/classes-model-impl" />
+		<path id="dependencies.model.impl">
+	  		<fileset dir="physical-build/jar-model-api/" includes="*.jar"/>
+	  		<fileset dir="physical-build/jar-persistence-api/" includes="*.jar"/>
+		</path>
+
+		<javac sourcepath="" srcdir="src/main/java"
+			classpathref="dependencies.model.impl"
+			destdir="physical-build/classes-model-impl"
+			includes="radio/model/**/*.java"
+			excludes="radio/model/api/*.java">
+		</javac>
+	</target>
+
+	<target name="jar-model-impl" depends="compile-model-impl">
+		<mkdir dir="physical-build/jar-model-impl"/>
+
+		<jar destfile="physical-build/jar-model-impl/model-impl.jar" 
+					basedir="physical-build/classes-model-impl">
+		</jar>
+	</target>
+
+	<target name="compile-ui" depends="jar-model-api">
+		<mkdir dir="physical-build/classes-ui" />
+		<javac 
+			sourcepath="" srcdir="src/main/java"
+			classpath="physical-build/jar-model-api/model-api.jar" 
+			destdir="physical-build/classes-ui"
+			includes="radio/ui/**/*.java">
+		</javac>
+	</target>
+
+	<target name="jar-ui" depends="compile-ui">
+		<mkdir dir="physical-build/jar-ui"/>
+
+		<jar destfile="physical-build/jar-ui/ui.jar" 
+					basedir="physical-build/jar-ui">
+		</jar>
+	</target>
+
+</project>
